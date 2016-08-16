@@ -1,27 +1,38 @@
 (function() {
+  var Class = ng.core.Class;
   var Component = ng.core.Component;
   var bootstrap = ng.platformBrowserDynamic.bootstrap;
+
+  var QuoteService = Class({
+    constructor: function QuoteService() {
+      this.quotes = quotes;
+    },
+    getRandomQuote: function() {
+      var randomIndex = Math.floor(Math.random() * this.quotes.length);
+      return this.quotes[randomIndex];
+    }
+  });
 
   var RandomQuoteComponent = Component({
     selector: 'random-quote',
     template: '<em>{{quote.line}}</em> - {{quote.author}}'
   })
   .Class({
-    constructor: function() {
-      var randomIndex = Math.floor(Math.random() * quotes.length);
-      this.quote = quotes[randomIndex];
-    }
+    constructor: [QuoteService, function RandomQuoteComponent(quoteService) {
+      this.quote = quoteService.getRandomQuote();
+    }]
   });
 
   var AppComponent = Component({
     selector: 'my-app',
     directives: [RandomQuoteComponent],
+    providers: [QuoteService],
     template: 
       '<h1>Random Quote</h1>' +
       '<p><random-quote></random-quote></p>'
   })
   .Class({
-    constructor: function() {
+    constructor: function AppComponent() {
       // empty
     }
   });
